@@ -1,0 +1,14 @@
+# DMTF Redfish-Mockup-Server for local Redfish exploration.
+#
+# This image does not send ETag headers and does not honor If-Match on PATCH
+# (--test-etag is unimplemented). For the ETag / If-Match integration test,
+# use the Go simulator instead: `make etag-sim` or `make test-integration`.
+#
+#   docker compose -f test/integration/docker-compose.yml up
+#   curl -sD - -o /dev/null http://127.0.0.1:8000/redfish/v1/
+#
+services:
+  redfish:
+    image: dmtf/redfish-mockup-server:latest
+    ports:
+      - "8000:8000"

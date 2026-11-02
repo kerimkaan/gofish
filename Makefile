@@ -6,10 +6,23 @@ PKGS := $(shell go list ./... | grep -v example | grep -v tools)
 ROOT_DIR := $(shell git rev-parse --show-toplevel)
 GOLANGCI_VERSION := "v2.6.2"
 
+.PHONY: all test test-integration etag-sim build lint fmt generate check-generate clean
+
 all: lint build test
 
 test:
 	go test -v $(PKGS) -cover -race
+
+# Opt-in ETag / If-Match test (//go:build integration). Starts a local
+# etag-aware fake unless GOFISH_TEST_REDFISH_URL points at a live service.
+test-integration:
+	go test -tags=integration -count=1 -v ./test/integration
+
+# Long-running Redfish fake that returns ETag and honors If-Match.
+#   make etag-sim
+#   GOFISH_TEST_REDFISH_URL=http://127.0.0.1:8000 make test-integration
+etag-sim:
+	go run ./tools/etag-sim
 
 build:
 	go build

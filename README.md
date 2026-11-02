@@ -44,3 +44,19 @@ func main() {
     }
 }
 ```
+
+## Testing ETag / If-Match locally
+
+`go test ./...` stays unit-test only. To exercise GET `ETag` capture and PATCH
+`If-Match` against an HTTP service:
+
+```bash
+make test-integration
+```
+
+That command is build-tagged (`integration`) and talks to a small Go Redfish
+fake that actually returns ETags and rejects a stale `If-Match`. The DMTF
+Redfish-Mockup-Server and Redfish-Interface-Emulator do not (Mockup-Server's
+`--test-etag` flag is unimplemented). See [test/integration/README.md](test/integration/README.md)
+for Docker Compose, `make etag-sim`, and pointing `GOFISH_TEST_REDFISH_URL` at
+a BMC.
